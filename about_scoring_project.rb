@@ -7,14 +7,14 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 # A greed roll is scored as follows:
 #
 # * A set of three ones is 1000 points
-#
+# 1-1-1  = 1000
 # * A set of three numbers (other than ones) is worth 100 times the
 #   number. (e.g. three fives is 500 points).
-#
+# x-x-x = x* 100
 # * A one (that is not part of a set of three) is worth 100 points.
-#
+# 1-x-y = 100
 # * A five (that is not part of a set of three) is worth 50 points.
-#
+# 5-x-y =50
 # * Everything else is worth 0 points.
 #
 #
@@ -31,6 +31,47 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 
 def score(dice)
   # You need to write this method
+  result = 0
+
+  # First idea: loop through all values and add to hash but only
+  # once per unique value and have a counter for how many times
+  # value was found
+
+  # The param for the new() method call acts as a default value if
+  # an accessed key doesn't exist. Awesome! Saved me from writing a
+  # bloated each statement with an if/elsif to handle existence!
+  counts = Hash.new(0)
+
+  dice.each do |value|
+    counts[value] += 1
+  end
+
+  counts.each do |item,numFound|
+    # 1,1,1 = 1000 points
+    if item == 1 && numFound >= 3 then
+      result += 1000
+      numFound -= 3
+    end
+
+    # any number other than 1, found 3 times is that number times
+    # 100.. so 5,5,5 = 500 points, 3,3,3 = 300 points, etc.
+    if item != 1 && numFound >= 3 then
+      result += item * 100
+      numFound -= 3
+    end
+
+    # 1 (not part of set) = 100 points for each found
+    if item == 1 && numFound <= 2 then
+      result += 100 * numFound
+    end
+
+    # 5 (not part of set) = 50 points for each found
+    if item == 5 && numFound <=2 then
+      result += 50 * numFound
+    end
+  end
+
+  result
 end
 
 class AboutScoringProject < Neo::Koan
