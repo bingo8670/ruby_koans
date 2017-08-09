@@ -126,7 +126,7 @@ class AboutControlStatements < Neo::Koan
     array = ["fish", "and", "chips"]
     result = []
     for item in array
-      result << item.upcase    #变为大写
+      result << item.upcase    # upcase:变为大写; downcase : 变为小写
     end
     assert_equal ["FISH", "AND", "CHIPS"], result
   end
